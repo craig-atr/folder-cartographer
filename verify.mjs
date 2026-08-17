@@ -40,6 +40,10 @@ import { fileURLToPath } from 'node:url';
 const HERE = dirname(fileURLToPath(import.meta.url));
 const RUN_WORD = 10; // a verbatim run of this many source words in a card = photocopy
 
+// Read text with line endings normalized to \n — a map cloned on Windows checks out CRLF,
+// and the parsers below must not care which platform the reader is on.
+const readText = (p) => readFileSync(p, 'utf8').replace(/\r\n/g, '\n');
+
 /* ── parsing ─────────────────────────────────────────────────────────────── */
 
 function parseCard(text) {
@@ -100,7 +104,7 @@ function gateCitations(name, card, territory) {
     if (!cm) { errs.push(`${name}: citation '${cite}' is not file:line`); continue; }
     const file = join(territory, cm[1]);
     if (!existsSync(file)) { errs.push(`${name}: citation '${cite}' → file not found`); continue; }
-    const lines = readFileSync(file, 'utf8').split('\n').length;
+    const lines = readText(file).split('\n').length;
     if (+cm[2] > lines) errs.push(`${name}: citation '${cite}' → file has only ${lines} lines`);
   }
   return errs;
@@ -117,7 +121,7 @@ function gatePhotocopy(name, card, territory) {
   for (const rel of files) {
     const file = join(territory, rel);
     if (!existsSync(file)) continue;
-    const src = words(readFileSync(file, 'utf8'));
+    const src = words(readText(file));
     for (let i = 0; i + RUN_WORD <= src.length; i++) {
       const run = src.slice(i, i + RUN_WORD).join(' ');
       if (cardStr.includes(' ' + run + ' ')) {
@@ -143,7 +147,7 @@ function gateLiveWiring(name, card, territory) {
     if (!cm) continue;
     const file = join(territory, cm[1]);
     if (!existsSync(file)) continue; // unresolvable citations are G3's job, not this gate's
-    const line = readFileSync(file, 'utf8').split('\n')[+cm[2] - 1];
+    const line = readText(file).split('\n')[+cm[2] - 1];
     if (line === undefined) continue;
     cited.push(cite);
     if (line.trim() !== '' && !COMMENT.test(line) && !WISH.test(line)) sawWiring = true;
@@ -211,11 +215,11 @@ function validateMap(mapDir, territory) {
   const errs = [];
   const declinePath = join(mapDir, 'decline.md');
   if (existsSync(declinePath) && !existsSync(join(mapDir, 'catalog.md')))
-    return gateDecline(readFileSync(declinePath, 'utf8'));
+    return gateDecline(readText(declinePath));
 
   const catPath = join(mapDir, 'catalog.md');
   if (!existsSync(catPath)) return [`no catalog.md and no decline.md in ${mapDir}`];
-  const catalog = parseCatalog(readFileSync(catPath, 'utf8'));
+  const catalog = parseCatalog(readText(catPath));
 
   errs.push(...gateNoSlurp(catalog.text));
   errs.push(...gateReachable(mapDir, catalog));
@@ -224,7 +228,7 @@ function validateMap(mapDir, territory) {
   for (const c of catalog.cards) {
     const p = join(mapDir, 'objects', c);
     if (!existsSync(p)) continue;
-    const card = parseCard(readFileSync(p, 'utf8'));
+    const card = parseCard(readText(p));
     errs.push(...gateSchema(c, card));
     errs.push(...gateDoesNotHit(c, card));
     errs.push(...gateEdges(c, card, slugs));
