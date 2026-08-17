@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>The Map Room — folder cartographer</title>
+<style>
+  :root{
+    --bg:#f3ecdd; --grid:rgba(120,105,75,.10); --panel:#fbf6ea; --ink:#2f2a20; --muted:#7a7161;
+    --line:#ddd2ba; --live:#1d7d5f; --leftover:#8a8375; --ghost:#b0731a; --accent:#1b5e8c;
+    --hit:#1d7d5f; --miss:#c0552a; --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  @media (prefers-color-scheme:dark){:root{
+    --bg:#1b1813; --grid:rgba(220,205,170,.06); --panel:#242017; --ink:#ece5d5; --muted:#a79e8c;
+    --line:#3d3729; --live:#5dcaa5; --leftover:#b8b0a0; --ghost:#e0a23c; --accent:#7fb2e0;
+    --hit:#5dcaa5; --miss:#e08a5c;
+  }}
+  *{box-sizing:border-box}
+  body{margin:0;color:var(--ink);font:16px/1.6 "Iowan Old Style",Palatino,Georgia,serif;
+    background:var(--bg);
+    background-image:repeating-linear-gradient(0deg,transparent 0 31px,var(--grid) 31px 32px),
+      repeating-linear-gradient(90deg,transparent 0 31px,var(--grid) 31px 32px);}
+  .ui{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+  header{padding:18px 24px 6px;display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap}
+  .compass{flex:none;color:var(--accent)}
+  h1{font-size:22px;font-weight:600;margin:0}
+  .sub{color:var(--muted);font-size:13px}
+  .bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:4px 24px 6px}
+  .toggle{display:inline-flex;border:1px solid var(--line);border-radius:20px;overflow:hidden}
+  .toggle button{background:transparent;border:0;padding:6px 16px;font:500 13px system-ui;color:var(--muted);cursor:pointer}
+  .toggle button.on{background:var(--accent);color:#fff}
+  .stats{display:flex;gap:14px;flex-wrap:wrap;margin-left:auto;font-size:12px;color:var(--muted);align-items:center}
+  .stats b{color:var(--ink);font-weight:600}
+  .chip{display:inline-flex;align-items:center;gap:5px}
+  .chip i{width:9px;height:9px;border-radius:50%;display:inline-block}
+  .legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--muted);padding:2px 24px 8px}
+  .legend .chip i.sq{border-radius:2px;border:1.5px dashed var(--ghost);width:10px;height:10px}
+  section{padding:6px 24px 30px}
+  /* cards view */
+  .wrap{display:grid;grid-template-columns:minmax(0,300px) minmax(0,1fr);gap:16px;align-items:start}
+  @media(max-width:720px){.wrap{grid-template-columns:1fr}}
+  .catalog h2{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:2px 0 8px}
+  .noun{display:block;width:100%;text-align:left;background:var(--panel);border:1px solid var(--line);border-left-width:4px;border-radius:6px;padding:8px 12px;margin:0 0 6px;cursor:pointer;color:inherit;font:inherit}
+  .noun:hover{border-color:var(--accent)}
+  .noun.sel{outline:2px solid var(--accent)}
+  .noun .nm{font-weight:600;font-family:system-ui}
+  .noun .wt{font-size:12px;color:var(--muted);font-family:system-ui}
+  .noun[data-state=live]{border-left-color:var(--live)}
+  .noun[data-state=leftover]{border-left-color:var(--leftover)}
+  .noun[data-state=ghost]{border-left-color:var(--ghost);border-left-style:dashed}
+  .collisions{margin-top:14px;font-size:13px;color:var(--muted);font-family:system-ui}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px 22px;min-height:340px}
+  .card .badge{font-size:12px;padding:2px 10px;border-radius:20px;margin-left:8px;vertical-align:middle;font-family:system-ui}
+  .b-live{background:color-mix(in srgb,var(--live) 16%,transparent);color:var(--live)}
+  .b-leftover{background:color-mix(in srgb,var(--leftover) 22%,transparent);color:var(--leftover)}
+  .b-ghost{background:color-mix(in srgb,var(--ghost) 20%,transparent);color:var(--ghost)}
+  .card h3{font-size:20px;margin:0 0 2px;display:flex;align-items:center;flex-wrap:wrap}
+  .lbl{font-size:12px;text-transform:uppercase;letter-spacing:.05em;margin:16px 0 4px;font-family:system-ui}
+  .lbl.hits{color:var(--hit)} .lbl.miss{color:var(--miss)} .lbl.n{color:var(--muted)}
+  .card ul{margin:0;padding-left:20px} .card li{margin:2px 0}
+  .src{font-family:var(--mono);font-size:12px;color:var(--muted);word-break:break-word}
+  .stop{margin-top:18px;padding-top:12px;border-top:1px dashed var(--line);font-size:13px;color:var(--muted);font-family:system-ui}
+  .empty{color:var(--muted);font-family:system-ui}
+  .err{color:var(--miss);font-size:14px;font-family:system-ui}
+  code{font-family:var(--mono);font-size:.9em;background:color-mix(in srgb,var(--muted) 14%,transparent);padding:1px 5px;border-radius:4px}
+  /* graph view */
+  #graphView{position:relative;width:660px;max-width:100%;height:460px;margin:0 auto}
+  #edges{position:absolute;inset:0;max-width:100%}
+  .gnode{position:absolute;transform:translate(-50%,-50%);background:var(--panel);color:var(--ink);
+    border:1.5px solid var(--live);border-radius:20px;padding:6px 12px;font:500 13px system-ui;
+    cursor:pointer;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,.12)}
+  .gnode[data-state=ghost]{border-color:var(--ghost);border-style:dashed}
+  .gnode[data-state=leftover]{border-color:var(--leftover)}
+  .gcap{text-align:center;font-size:13px;color:var(--muted);margin-top:4px;min-height:20px;font-family:system-ui}
+  .hidden{display:none}
+</style>
+</head>
+<body>
+<header>
+  <svg class="compass" width="34" height="34" viewBox="0 0 100 100" aria-hidden="true">
+    <circle cx="50" cy="50" r="46" fill="none" stroke="currentColor" stroke-width="2"/>
+    <polygon points="50,8 58,50 50,44 42,50" fill="currentColor"/>
+    <polygon points="50,92 42,50 50,56 58,50" fill="currentColor" opacity=".5"/>
+    <polygon points="8,50 50,42 44,50 50,58" fill="currentColor" opacity=".5"/>
+    <polygon points="92,50 50,58 56,50 50,42" fill="currentColor" opacity=".5"/>
+    <circle cx="50" cy="50" r="4" fill="currentColor"/>
+  </svg>
+  <div>
+    <h1>The Map Room</h1>
+    <div class="sub" id="terr">loading map…</div>
+  </div>
+</header>
+
+<div class="bar">
+  <div class="toggle ui">
+    <button id="tGraph" class="on" onclick="setView('graph')">Graph</button>
+    <button id="tCards" onclick="setView('cards')">Cards</button>
+  </div>
+  <div class="stats" id="stats"></div>
+</div>
+<div class="legend">
+  <span class="chip"><i style="background:var(--live)"></i>live</span>
+  <span class="chip"><i class="sq"></i>ghost (tripwire)</span>
+  <span class="chip"><i style="background:var(--leftover)"></i>leftover</span>
+  <span class="chip"><svg width="24" height="8"><line x1="0" y1="4" x2="24" y2="4" stroke="var(--hit)" stroke-width="2.5"/></svg>moves (hits)</span>
+  <span class="chip"><svg width="24" height="8"><line x1="0" y1="4" x2="24" y2="4" stroke="var(--miss)" stroke-width="2.5" stroke-dasharray="4 3"/></svg>does not hit</span>
+</div>
+
+<section id="graphSection">
+  <div id="graphView"><svg id="edges" viewBox="0 0 660 460"></svg></div>
+  <div class="gcap" id="gcap">Click a noun — its movements light up. Click again to open the card.</div>
+</section>
+
+<section id="cardsSection" class="hidden">
+  <div class="wrap">
+    <div class="catalog">
+      <h2>Catalog · the front door</h2>
+      <div id="nouns"><span class="empty">…</span></div>
+      <div class="collisions" id="collisions"></div>
+    </div>
+    <div class="card" id="card"><span class="empty">Pick one noun. You open one card, learn what moves, and stop — you never load the whole objects folder.</span></div>
+  </div>
+</section>
+
+<script>
+const MAP = new URLSearchParams(location.search).get('map') || '../receipts/vendor-lilly';
+let NODES=[], EDGES=[], CARDS={}, gsel=null;
+
+async function get(p){ const r=await fetch(p); if(!r.ok) throw new Error(p+' → '+r.status); return r.text(); }
+function esc(s){ return s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
+function inline(s){ return esc(s).replace(/`([^`]+)`/g,'<code>$1</code>').replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>').replace(/\*([^*]+)\*/g,'<em>$1</em>'); }
+
+function parseCatalog(md){
+  const cards=[]; let title=''; const tm=md.match(/^#\s+(.*)$/m); if(tm) title=tm[1];
+  for(const row of md.split('\n')){
+    if(!row.trim().startsWith('|')) continue;
+    const c=row.split('|').map(x=>x.trim());
+    const link=row.match(/objects\/([A-Za-z0-9._-]+\.md)/); if(!link) continue;
+    if(/^-+$/.test(c[1]||'')) continue;
+    cards.push({id:link[1].replace(/\.md$/,''),file:link[1],noun:c[1],state:(c[2]||'live').toLowerCase(),what:c[3]||''});
+  }
+  const coll=[]; const cm=md.split(/##\s*Collisions/i)[1];
+  if(cm) for(const l of cm.split('\n')) if(l.trim().startsWith('- ')) coll.push(l.trim().slice(2));
+  return {title,cards,coll};
+}
+function parseCard(md){
+  const fm={}; let body=md; const m=md.match(/^---\n([\s\S]*?)\n---\n?([\s\S]*)$/);
+  if(m){ for(const l of m[1].split('\n')){ const kv=l.match(/^(\w+):\s*(.*)$/); if(kv) fm[kv[1]]=kv[2].trim(); } body=m[2]; }
+  const secs={}; let cur=null;
+  for(const l of body.split('\n')){ const h=l.match(/^##\s+(.*)$/); if(h){cur=h[1].toLowerCase();secs[cur]=[];} else if(cur){secs[cur].push(l);} }
+  return {fm,secs};
+}
+const list=(fm,k)=>(fm[k]||'').split(',').map(s=>s.trim()).filter(Boolean);
+function pick(secs,kw){ const k=Object.keys(secs).find(h=>h.includes(kw)); return k?secs[k]:[]; }
+function bullets(ls){ return ls.filter(l=>l.trim().startsWith('- ')).map(l=>'<li>'+inline(l.trim().slice(2))+'</li>').join(''); }
+function paras(ls){ return ls.join('\n').trim().split(/\n\s*\n/).filter(Boolean).map(p=>'<p>'+inline(p.replace(/\n/g,' '))+'</p>').join(''); }
+
+function renderCard(id){
+  const n=NODES.find(x=>x.id===id); const c=CARDS[id]; const card=document.getElementById('card');
+  if(!c){ card.innerHTML='<div class="err">card not loaded</div>'; return; }
+  card.innerHTML=
+    '<h3>'+esc(c.fm.noun||n.noun)+'<span class="badge b-'+(c.fm.state||'live')+'">'+(c.fm.state||'live')+'</span></h3>'+
+    '<div class="lbl n">what it is</div>'+paras(pick(c.secs,'what it is'))+
+    '<div class="lbl n">why it is shaped this way</div>'+paras(pick(c.secs,'why'))+
+    '<div class="lbl hits">hits — change this, these move</div><ul>'+bullets(pick(c.secs,'hits'))+'</ul>'+
+    '<div class="lbl miss">does not hit — the wrong neighbour</div><ul>'+bullets(pick(c.secs,'does not hit'))+'</ul>'+
+    '<div class="lbl n">source — the file wins, this card can be wrong</div>'+
+    '<div class="src">'+esc(c.fm.source||'')+'</div>'+
+    '<div class="stop">You have what you came for. Stop here — don’t open the rest of the shelf.</div>';
+  document.querySelectorAll('.noun').forEach(b=>b.classList.toggle('sel',b.dataset.id===id));
+}
+
+function setView(v){
+  document.getElementById('graphSection').classList.toggle('hidden',v!=='graph');
+  document.getElementById('cardsSection').classList.toggle('hidden',v!=='cards');
+  document.getElementById('tGraph').classList.toggle('on',v==='graph');
+  document.getElementById('tCards').classList.toggle('on',v==='cards');
+}
+
+function layoutGraph(){
+  const svg=document.getElementById('edges'), gv=document.getElementById('graphView');
+  gv.querySelectorAll('.gnode').forEach(e=>e.remove()); svg.innerHTML='';
+  const cx=330,cy=225,rx=270,ry=165,n=NODES.length;
+  NODES.forEach((nd,i)=>{ const a=-Math.PI/2+i*2*Math.PI/n; nd._x=cx+rx*Math.cos(a); nd._y=cy+ry*Math.sin(a); });
+  const seen=new Set();
+  EDGES.forEach(e=>{
+    const key=[e.a,e.b].sort().join('|')+e.kind; if(seen.has(key))return; seen.add(key);
+    const A=NODES.find(x=>x.id===e.a),B=NODES.find(x=>x.id===e.b); if(!A||!B)return;
+    const ln=document.createElementNS('http://www.w3.org/2000/svg','line');
+    ln.setAttribute('x1',A._x);ln.setAttribute('y1',A._y);ln.setAttribute('x2',B._x);ln.setAttribute('y2',B._y);
+    ln.setAttribute('stroke',e.kind==='hit'?'var(--hit)':'var(--miss)');
+    ln.setAttribute('stroke-width','2.5'); ln.style.transition='opacity .15s,stroke-width .15s';
+    if(e.kind==='miss')ln.setAttribute('stroke-dasharray','5 4');
+    e._el=ln; svg.appendChild(ln);
+  });
+  NODES.forEach(nd=>{
+    const b=document.createElement('button'); b.className='gnode'; b.dataset.state=nd.state; b.dataset.id=nd.id;
+    b.style.left=(nd._x/660*100)+'%'; b.style.top=(nd._y/460*100)+'%'; b.textContent=nd.noun;
+    b.onclick=()=>{ if(gsel===nd.id){ setView('cards'); renderCard(nd.id); } else { gsel=nd.id; highlight(nd.id); } };
+    nd._el=b; gv.appendChild(b);
+  });
+}
+function highlight(id){
+  EDGES.forEach(e=>{ const on=(e.a===id||e.b===id); if(!e._el)return; e._el.style.opacity=on?'1':'0.12'; e._el.setAttribute('stroke-width',on?'3.5':'2.5'); });
+  NODES.forEach(nd=>{ nd._el.style.opacity=(nd.id===id)?'1':'0.55'; });
+  const hit=EDGES.filter(e=>(e.a===id||e.b===id)&&e.kind==='hit').length;
+  const miss=EDGES.filter(e=>(e.a===id||e.b===id)&&e.kind==='miss').length;
+  const nd=NODES.find(x=>x.id===id);
+  document.getElementById('gcap').innerHTML='<b>'+esc(nd.noun)+'</b> — '+hit+' move'+(hit===1?'':'s')+', '+miss+' wrong-neighbour'+(miss===1?'':'s')+'. Click again to open the card.';
+}
+
+(async function(){
+  try{
+    const cat=parseCatalog(await get(MAP+'/catalog.md'));
+    NODES=cat.cards;
+    document.getElementById('terr').textContent=cat.title+' — one question, one card, then stop';
+    // cards list
+    const box=document.getElementById('nouns'); box.innerHTML='';
+    cat.cards.forEach(c=>{ const b=document.createElement('button'); b.className='noun'; b.dataset.state=c.state; b.dataset.id=c.id;
+      b.innerHTML='<span class="nm">'+esc(c.noun)+'</span> <span class="wt">— '+esc(c.what)+'</span>';
+      b.onclick=async()=>{ if(!CARDS[c.id]){ try{CARDS[c.id]=parseCard(await get(MAP+'/objects/'+c.file));}catch(e){document.getElementById('card').innerHTML='<div class="err">'+esc(e.message)+'</div>';return;} } renderCard(c.id); };
+      box.appendChild(b); });
+    if(cat.coll.length) document.getElementById('collisions').innerHTML='<h2 style="text-transform:uppercase;font-size:12px;letter-spacing:.06em;margin:0 0 6px">Collisions — read first</h2>'+cat.coll.map(x=>'<div>· '+inline(x)+'</div>').join('');
+    // load all cards for the graph + edges
+    await Promise.all(cat.cards.map(async c=>{ if(!CARDS[c.id]) CARDS[c.id]=parseCard(await get(MAP+'/objects/'+c.file)); }));
+    EDGES=[]; const eseen=new Set();
+    cat.cards.forEach(c=>{ const fm=CARDS[c.id].fm;
+      const add=(t,kind)=>{ const k=[c.id,t].sort().join('|')+kind; if(eseen.has(k))return; eseen.add(k); EDGES.push({a:c.id,b:t,kind}); };
+      list(fm,'hits').forEach(t=>add(t,'hit'));
+      list(fm,'misses').forEach(t=>add(t,'miss')); });
+    // stats
+    const cnt=s=>cat.cards.filter(c=>c.state===s).length;
+    document.getElementById('stats').innerHTML=
+      '<span><b>'+cat.cards.length+'</b> nouns</span>'+
+      '<span class="chip"><i style="background:var(--live)"></i><b>'+cnt('live')+'</b> live</span>'+
+      '<span class="chip"><i style="background:var(--leftover)"></i><b>'+cnt('leftover')+'</b> leftover</span>'+
+      '<span class="chip"><i style="background:var(--ghost)"></i><b>'+cnt('ghost')+'</b> ghost</span>'+
+      '<span><b>'+EDGES.length+'</b> movements</span>';
+    layoutGraph();
+  }catch(e){
+    document.getElementById('terr').innerHTML='<span class="err">Could not load '+esc(MAP)+'/catalog.md — serve over http (see README): '+esc(e.message)+'</span>';
+  }
+})();
+</script>
+</body>
+</html>
