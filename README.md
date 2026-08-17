@@ -85,7 +85,7 @@ python -m http.server 8231
 | `reference/` | the closed set of card types, the walk order, the naming collisions |
 | `verify.mjs` | the offline checker; `--selftest` proves every gate bites |
 | `fixtures/` | a tiny self-contained territory + a good map + one negative fixture per gate |
-| `receipts/` | real runs: the Vendor Lilly map + an honest decline on an archive |
+| `receipts/` | real runs: two maps (Vendor Lilly, Atomic Tattoo Removal) + an honest archive decline |
 | `viewer/` | the visual Map Room (renders a produced map, one card at a time) |
 
 ## What it will NOT do
@@ -97,8 +97,12 @@ python -m http.server 8231
 - **It will not map an archive.** Nouns that don't move each other get a decline, not a fake city.
 - **It will not map itself.** The territory is your body of work, not this methodology.
 
-## Worked example
+## Worked examples
 
-[`receipts/vendor-lilly/`](receipts/vendor-lilly/) — a map of a real multi-tenant vendor-portal
-SaaS backend: six cards (five live, one ghost), each cited to source and gated green. Start at its
-[`catalog.md`](receipts/vendor-lilly/catalog.md) and open one card.
+- [`receipts/vendor-lilly/`](receipts/vendor-lilly/) — a real multi-tenant vendor-portal SaaS
+  backend: six cards (five live, one ghost), each cited to source and gated green. Start at its
+  [`catalog.md`](receipts/vendor-lilly/catalog.md) and open one card.
+- [`receipts/atomic-tattoo-removal/`](receipts/atomic-tattoo-removal/) — a real React + Express
+  clinic site whose lesson is that **three backends live in one repo and never touch each other**
+  (Express booking, Firestore admin, external CRM): seven cards (six live, one ghost — an admin auth
+  gate that is narrower than its name), gated green against the private source.

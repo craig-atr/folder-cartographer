@@ -34,6 +34,7 @@ folder you own over the next few weeks.
 ## Folders worth mapping (all yours, all safe to publish)
 
 - `vendor-lilly` — done (`receipts/vendor-lilly/`).
+- `atomic-tattoo-removal` — done (`receipts/atomic-tattoo-removal/`): the three-backends-in-one-repo map.
 - `astanza-crm` — the clinic CRM (exclude `uploads/` + `offline-submissions/` — real customer data).
 - `brewerybytes` — a smaller React + Firebase app; good for a compact second map.
 
