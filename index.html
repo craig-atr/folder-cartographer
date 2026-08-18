@@ -141,7 +141,7 @@ function renderMap(r,c){
     + '<span class="go">Enter the Map Room →</span></a>';
 }
 function renderDecline(r){
-  return '<a class="rc decline" href="receipts/'+r.slug+'/decline.md">'
+  return '<a class="rc decline" href="viewer/index.html?map=../receipts/'+r.slug+'">'
     + '<div class="kind">Declined</div><h3>'+r.title+'</h3>'
     + '<p class="blurb">'+r.blurb+'</p>'
     + '<div class="chips"><span class="chip"><i class="g"></i>no roads</span></div>'

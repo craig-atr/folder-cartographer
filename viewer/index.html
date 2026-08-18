@@ -50,6 +50,8 @@
   .noun[data-state=ghost]{border-left-color:var(--ghost);border-left-style:dashed}
   .collisions{margin-top:14px;font-size:13px;color:var(--muted);font-family:system-ui}
   .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px 22px;min-height:340px}
+  .doc{max-width:720px;margin:0 auto}
+  .doc p{margin:6px 0}
   .card .badge{font-size:12px;padding:2px 10px;border-radius:20px;margin-left:8px;vertical-align:middle;font-family:system-ui}
   .b-live{background:color-mix(in srgb,var(--live) 16%,transparent);color:var(--live)}
   .b-leftover{background:color-mix(in srgb,var(--leftover) 22%,transparent);color:var(--leftover)}
@@ -120,6 +122,10 @@
     </div>
     <div class="card" id="card"><span class="empty">Pick one noun. You open one card, learn what moves, and stop — you never load the whole objects folder.</span></div>
   </div>
+</section>
+
+<section id="declineSection" class="hidden">
+  <div class="card doc" id="decline"></div>
 </section>
 
 <script>
@@ -209,9 +215,56 @@ function highlight(id){
   document.getElementById('gcap').innerHTML='<b>'+esc(nd.noun)+'</b> — '+hit+' move'+(hit===1?'':'s')+', '+miss+' wrong-neighbour'+(miss===1?'':'s')+'. Click again to open the card.';
 }
 
+function parseDoc(md){
+  const tm=md.match(/^#\s+(.*)$/m); const title=tm?tm[1]:'Declined';
+  const secs=[]; let cur=null, pre=[], seenH1=false;
+  for(const l of md.split('\n')){
+    if(/^#\s+/.test(l)){ seenH1=true; continue; }
+    const h=l.match(/^##\s+(.*)$/);
+    if(h){ cur={head:h[1].trim(),lines:[]}; secs.push(cur); }
+    else if(cur){ cur.lines.push(l); }
+    else if(seenH1){ pre.push(l); }
+  }
+  return {title,pre,secs};
+}
+function renderDecline(md){
+  const d=parseDoc(md);
+  document.querySelector('.bar').classList.add('hidden');
+  document.querySelector('.legend').classList.add('hidden');
+  document.getElementById('graphSection').classList.add('hidden');
+  document.getElementById('cardsSection').classList.add('hidden');
+  document.getElementById('declineSection').classList.remove('hidden');
+  document.getElementById('terr').textContent='a decline — an archive is not a system';
+  const name=d.title.replace(/^Decline\s*[—:-]\s*/i,'');
+  let html='<h3>'+esc(name)+'<span class="badge b-ghost">declined · no roads</span></h3>';
+  if(d.pre.join('').trim()) html+=paras(d.pre);
+  for(const s of d.secs){
+    html+='<div class="lbl n">'+esc(s.head)+'</div>';
+    html+= s.lines.some(l=>l.trim().startsWith('- ')) ? '<ul>'+bullets(s.lines)+'</ul>' : paras(s.lines);
+  }
+  html+='<div class="stop">No catalog, no cards — the honest answer to a folder whose files don’t move each other. Point the cartographer at a system and it will draw you one.</div>';
+  document.getElementById('decline').innerHTML=html;
+}
+function showLoadError(e){
+  const t=document.getElementById('terr');
+  if(location.protocol==='file:'){
+    t.innerHTML='<span class="err">Opened as a file — the browser blocks loading maps over <code>file://</code>.</span>'
+      +'<div style="margin-top:6px;color:var(--ink);font-family:system-ui;font-size:14px">'
+      +'Run <code>node serve.mjs</code> in the repo, then open <b>http://localhost:8231/</b> and click this map from the atlas.</div>';
+  } else {
+    t.innerHTML='<span class="err">Could not load '+esc(MAP)+': '+esc(e.message)+'</span>';
+  }
+}
+
 (async function(){
+  let catText;
+  try{ catText=await get(MAP+'/catalog.md'); }
+  catch(eCat){
+    try{ renderDecline(await get(MAP+'/decline.md')); return; }
+    catch(eDec){ showLoadError(eCat); return; }
+  }
   try{
-    const cat=parseCatalog(await get(MAP+'/catalog.md'));
+    const cat=parseCatalog(catText);
     NODES=cat.cards;
     document.getElementById('terr').textContent=cat.title+' — one question, one card, then stop';
     // cards list
@@ -237,16 +290,7 @@ function highlight(id){
       '<span class="chip"><i style="background:var(--ghost)"></i><b>'+cnt('ghost')+'</b> ghost</span>'+
       '<span><b>'+EDGES.length+'</b> movements</span>';
     layoutGraph();
-  }catch(e){
-    const t=document.getElementById('terr');
-    if(location.protocol==='file:'){
-      t.innerHTML='<span class="err">Opened as a file — the browser blocks loading maps over <code>file://</code>.</span>'
-        +'<div style="margin-top:6px;color:var(--ink);font-family:system-ui;font-size:14px">'
-        +'Run <code>node serve.mjs</code> in the repo, then open <b>http://localhost:8231/</b> and click this map from the atlas.</div>';
-    } else {
-      t.innerHTML='<span class="err">Could not load '+esc(MAP)+'/catalog.md: '+esc(e.message)+'</span>';
-    }
-  }
+  }catch(e){ showLoadError(e); }
 })();
 </script>
 </body>
