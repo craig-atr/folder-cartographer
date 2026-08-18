@@ -71,6 +71,11 @@
     </div>
   </header>
 
+  <div id="fileWarn" style="display:none;margin:0 0 18px;padding:12px 16px;background:color-mix(in srgb,var(--ghost) 12%,var(--panel));border:1px solid var(--ghost);border-radius:8px;font-size:14px" class="ui">
+    <b>You opened this as a file.</b> The maps load over http, not <code style="font-family:var(--mono)">file://</code> — so the links below can’t render yet.
+    Run <code style="font-family:var(--mono)">node serve.mjs</code> in the repo, then open <b>http://localhost:8231/</b>.
+  </div>
+
   <div class="lede">
     Each card below is a real body of work the cartographer walked and left a map of. Pick one, open its
     catalog, then open <b>one</b> card and stop — you never load the whole thing.
@@ -144,6 +149,7 @@ function renderDecline(r){
 }
 
 (async function(){
+  if(location.protocol==='file:') document.getElementById('fileWarn').style.display='block';
   const maps=document.getElementById('maps');
   maps.innerHTML = RECEIPTS.map(r=>renderMap(r,r.fallback)).join('');
   document.getElementById('declines').innerHTML = DECLINES.map(renderDecline).join('');

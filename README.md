@@ -68,17 +68,19 @@ model reads. Two views:
   can't draw a road that doesn't exist.
 - **Cards** — the catalog + one card at a time, with the collisions list.
 
-It is a way to *see* a map, not the map itself (the markdown is canonical). Serve it over http:
+It is a way to *see* a map, not the map itself (the markdown is canonical). It reads the maps with
+`fetch()`, which browsers block on `file://` — so **don't double-click it, serve it.** One command,
+no extra tools (you already have Node for `verify.mjs`):
 
 ```bash
-python -m http.server 8231
-# then open http://localhost:8231/  — the landing page lists every receipt
+node serve.mjs
 ```
 
+That starts a tiny zero-dependency server and opens the atlas at `http://localhost:8231/`.
 `index.html` (repo root) is the **front door to the receipts**: it lists every real map with its
 live / leftover / ghost counts (pulled live from each catalog) and links straight into the Map Room,
-plus the honest decline. Open `http://localhost:8231/` after serving. To jump to one map directly:
-`http://localhost:8231/viewer/?map=../receipts/astanza-crm`.
+plus the honest decline. (`python -m http.server 8231` works too. To jump to one map directly:
+`http://localhost:8231/viewer/?map=../receipts/astanza-crm`.)
 
 ## What's in here
 
@@ -92,6 +94,7 @@ plus the honest decline. Open `http://localhost:8231/` after serving. To jump to
 | `fixtures/` | a tiny self-contained territory + a good map + one negative fixture per gate |
 | `receipts/` | real runs: three maps (Vendor Lilly, Atomic Tattoo Removal, Astanza CRM) + an honest archive decline |
 | `viewer/` | the visual Map Room (renders a produced map, one card at a time) |
+| `index.html` + `serve.mjs` | the atlas landing page + a zero-dep local server (`node serve.mjs`) |
 
 ## What it will NOT do
 

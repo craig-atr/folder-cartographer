@@ -238,7 +238,14 @@ function highlight(id){
       '<span><b>'+EDGES.length+'</b> movements</span>';
     layoutGraph();
   }catch(e){
-    document.getElementById('terr').innerHTML='<span class="err">Could not load '+esc(MAP)+'/catalog.md — serve over http (see README): '+esc(e.message)+'</span>';
+    const t=document.getElementById('terr');
+    if(location.protocol==='file:'){
+      t.innerHTML='<span class="err">Opened as a file — the browser blocks loading maps over <code>file://</code>.</span>'
+        +'<div style="margin-top:6px;color:var(--ink);font-family:system-ui;font-size:14px">'
+        +'Run <code>node serve.mjs</code> in the repo, then open <b>http://localhost:8231/</b> and click this map from the atlas.</div>';
+    } else {
+      t.innerHTML='<span class="err">Could not load '+esc(MAP)+'/catalog.md: '+esc(e.message)+'</span>';
+    }
   }
 })();
 </script>
