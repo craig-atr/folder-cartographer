@@ -85,7 +85,7 @@ python -m http.server 8231
 | `reference/` | the closed set of card types, the walk order, the naming collisions |
 | `verify.mjs` | the offline checker; `--selftest` proves every gate bites |
 | `fixtures/` | a tiny self-contained territory + a good map + one negative fixture per gate |
-| `receipts/` | real runs: two maps (Vendor Lilly, Atomic Tattoo Removal) + an honest archive decline |
+| `receipts/` | real runs: three maps (Vendor Lilly, Atomic Tattoo Removal, Astanza CRM) + an honest archive decline |
 | `viewer/` | the visual Map Room (renders a produced map, one card at a time) |
 
 ## What it will NOT do
@@ -106,3 +106,8 @@ python -m http.server 8231
   clinic site whose lesson is that **three backends live in one repo and never touch each other**
   (Express booking, Firestore admin, external CRM): seven cards (six live, one ghost — an admin auth
   gate that is narrower than its name), gated green against the private source.
+- [`receipts/astanza-crm/`](receipts/astanza-crm/) — a **big, messy** multi-tenant CRM where most of
+  the repo is *not* the app: a 7-noun spine over a junk-drawer root, showing all three states — live
+  (server, public external API, two independent auth layers), **leftover** (a superseded
+  `server.original.js`, the drawer of one-off scripts), and a **ghost** (an empty index config a
+  reader trusts). Gated green against the private source.
