@@ -72,8 +72,13 @@ It is a way to *see* a map, not the map itself (the markdown is canonical). Serv
 
 ```bash
 python -m http.server 8231
-# then open http://localhost:8231/viewer/?map=../receipts/vendor-lilly
+# then open http://localhost:8231/  — the landing page lists every receipt
 ```
+
+`index.html` (repo root) is the **front door to the receipts**: it lists every real map with its
+live / leftover / ghost counts (pulled live from each catalog) and links straight into the Map Room,
+plus the honest decline. Open `http://localhost:8231/` after serving. To jump to one map directly:
+`http://localhost:8231/viewer/?map=../receipts/astanza-crm`.
 
 ## What's in here
 
