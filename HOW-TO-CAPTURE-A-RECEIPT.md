@@ -36,6 +36,7 @@ folder you own over the next few weeks.
 - `vendor-lilly` — done (`receipts/vendor-lilly/`).
 - `atomic-tattoo-removal` — done (`receipts/atomic-tattoo-removal/`): the three-backends-in-one-repo map.
 - `astanza-crm` — done (`receipts/astanza-crm/`): the live/leftover/ghost map over a junk-drawer root.
+- `fitness-pixel` / Arnold — done (`receipts/arnold-android/`): the Android/Kotlin map with a real ghost.
 - `brewerybytes` — a smaller React + Firebase app; good for a compact second map.
 
 Skip: `MySeniorCenter` (client code + SSNs), `fiji-modern` / `consignment-radar` (ICM starters —

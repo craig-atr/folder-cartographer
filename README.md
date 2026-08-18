@@ -92,7 +92,7 @@ plus the honest decline. (`python -m http.server 8231` works too. To jump to one
 | `reference/` | the closed set of card types, the walk order, the naming collisions |
 | `verify.mjs` | the offline checker; `--selftest` proves every gate bites |
 | `fixtures/` | a tiny self-contained territory + a good map + one negative fixture per gate |
-| `receipts/` | real runs: three maps (Vendor Lilly, Atomic Tattoo Removal, Astanza CRM) + an honest archive decline |
+| `receipts/` | real runs: four maps (Vendor Lilly, Atomic Tattoo Removal, Astanza CRM, Arnold/Android) + an honest archive decline |
 | `viewer/` | the visual Map Room (renders a produced map, one card at a time) |
 | `index.html` + `serve.mjs` | the atlas landing page + a zero-dep local server (`node serve.mjs`) |
 
@@ -119,3 +119,7 @@ plus the honest decline. (`python -m http.server 8231` works too. To jump to one
   (server, public external API, two independent auth layers), **leftover** (a superseded
   `server.original.js`, the drawer of one-off scripts), and a **ghost** (an empty index config a
   reader trusts). Gated green against the private source.
+- [`receipts/arnold-android/`](receipts/arnold-android/) — a **different shape**: a Kotlin/Android AI
+  fitness-coach app. Teaches interface-vs-impl wired once in `MainActivity`, a **leftover** (the old
+  Node app quarantined out of the Gradle build), and a **ghost** (a first-launch migrator that is
+  green in tests but called by no production path). Gated green against the private source.
