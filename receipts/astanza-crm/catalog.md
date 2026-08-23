@@ -1,8 +1,8 @@
 # Catalog — Astanza CRM (the server spine, live vs. leftover)
 
 > Load this, then ONE card. Never the whole `objects/` folder.
-> Territory: `astanza-crm` — a multi-tenant CRM for tattoo-removal clinics (Express + Firebase, I own
-> it). The repo root is a **junk drawer**: ~30 loose `test-*` / `debug-*` / `seed-*` / `fix-*` scripts
+> Territory: `astanza-crm` — a multi-tenant CRM for tattoo-removal clinics (Express + Firebase).
+> The repo root is a **junk drawer**: ~30 loose `test-*` / `debug-*` / `seed-*` / `fix-*` scripts
 > and a dozen design docs sit next to the real app. This map is small on purpose — the **7 nouns a
 > reader must hold before changing how a clinic's data flows**, and which of the loose files are
 > **live, leftover, or a ghost.** The feature routes (stripe, tiktok, sms, images, email, trend-radar)

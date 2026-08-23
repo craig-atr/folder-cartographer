@@ -1,8 +1,8 @@
 # Catalog — Atomic Tattoo Removal (the site's request + data spine)
 
 > Load this, then ONE card. Never the whole `objects/` folder.
-> Territory: `atomic-tattoo-removal` — a React + Express site for a laser-tattoo-removal clinic
-> (I own it). Mapped: the **spine a reader must hold before changing how a visitor's data flows** —
+> Territory: `atomic-tattoo-removal` — a React + Express site for a laser-tattoo-removal clinic.
+> Mapped: the **spine a reader must hold before changing how a visitor's data flows** —
 > the booking pipeline and the two *other* backends that live in the same repo. The marketing
 > pages, the image pipeline, and the seasonal campaign routes are off this map on purpose — see
 > `run-notes.md`.

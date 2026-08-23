@@ -1,7 +1,7 @@
 # Catalog — Arnold (the Android app's spine, interface vs. impl)
 
 > Load this, then ONE card. Never the whole `objects/` folder.
-> Territory: `fitness-pixel` — an Android/Kotlin AI fitness-coach app ("Arnold", I own it). This map
+> Territory: `fitness-pixel` — an Android/Kotlin AI fitness-coach app ("Arnold"). This map
 > is of the **app** — `app/` plus its build and the quarantined `legacy/`. It is **not** of
 > `workflows/` or `docs/` — those are the ICM method that *builds* the app, not the app. Mapped: the
 > **7 nouns a reader must hold before changing how a user's data flows or how the AI coach runs**,

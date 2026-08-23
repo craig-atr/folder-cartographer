@@ -31,7 +31,8 @@ Deliberately **off** the map (and why):
 - **All patient data** — `server/uploads/`, `server/offline-submissions/`, `server/cache/medical-pdfs`,
   and `.env`. Real PII and secrets; a cartographer names its exclusions and never copies them into a card.
 - The **design docs** (`*_API.md`, `MEDICAL_FORM_SYSTEM.md`, `TwilioReminder.md`, `ToDo.md`) — these
-  describe intent; the map cites the code that runs. Some are candidate ghosts to confirm next pass.
+  describe intent; the map cites the code that runs. Some describe features with no live wiring, so they
+  are doc-ghosts off this spine rather than nouns a reader holds first.
 
 ## Verification
 
@@ -46,9 +47,10 @@ its source, every `live` card cites real wiring (G9), every card has Hits + Does
 reachable from the catalog, and the loader never says "load everything." The two leftovers and the
 ghost are exempt from the live-wiring gate by design.
 
-## Notes for the next run
+## Off this map (and why)
 
-- Confirm whether `telegram-bot.js` (required at `server/server.js:310`) is live in production or dark
-  behind an unset token — it is wired but may be a conditional ghost.
-- `TwilioReminder.md` describes scheduled reminders; confirm a scheduler actually runs them, or the
-  reminder feature is a doc-ghost.
+- **`telegram-bot.js`** (required at `server/server.js:310`) is wired but may run dark behind an unset
+  token — a conditional ghost. Off this spine: it is a feature route, not part of the core data-flow the
+  seven cards hold.
+- **`TwilioReminder.md`** describes scheduled reminders with no confirmed scheduler behind them — a
+  possible doc-ghost, off this map for the same reason.

@@ -32,8 +32,9 @@ Expected: all gates green — citations resolve, no card photocopies its source,
 Hits + Does-not-hit, every noun is reachable from the catalog, and the loader never says "load
 everything."
 
-## Notes for the next run
+## Off this map (and why)
 
-- A fuller map would hunt **leftovers** (this pass found one clean ghost, `flock`, but did not
-  confirm a superseded-file leftover). The `/debug` route is a candidate to classify next.
-- The Stripe vs Square webhook pair is a second spine worth its own two cards.
+- **Leftovers.** This spine carries one clean ghost (`flock`) and no leftover — nothing on the mapped
+  request path is superseded residue. `/debug` is the nearest unclassified route, just off the spine.
+- **The Stripe/Square webhook pair** is a second spine, off this map on purpose — a reader changing
+  webhooks opens that map, not these five cards.

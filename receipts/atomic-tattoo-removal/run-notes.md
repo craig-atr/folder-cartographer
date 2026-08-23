@@ -38,9 +38,11 @@ its source, every `live` card cites real wiring (G9), every card has Hits + Does
 is reachable from the catalog, and the loader never says "load everything." Without the territory,
 `--map` alone still checks everything except citation resolution and the live-wiring gate.
 
-## Notes for the next run
+## Off this map (and why)
 
-- The `attribution` collision (flat `utm_*` → Calendar description vs the full object → CRM) is worth
-  its own card if a reader is changing marketing tracking specifically.
-- `GOOGLE_CALENDAR_OWNER_EMAIL` is read in `calendarService.js` but absent from `.env.example` — a
-  candidate config ghost to confirm on the next pass.
+- **The `attribution` collision** (flat `utm_*` → Calendar description vs the full object → CRM) is a
+  card of its own for a reader changing marketing tracking specifically — off this spine, which maps the
+  data-flow path.
+- **`GOOGLE_CALENDAR_OWNER_EMAIL`** is read in `calendarService.js` but absent from `.env.example` — a
+  likely config ghost, noted but not carded: it is one env var below the spine, not a noun a reader
+  holds first.

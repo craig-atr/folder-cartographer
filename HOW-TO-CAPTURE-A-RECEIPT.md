@@ -2,7 +2,7 @@
 
 A receipt is a real run of the cartographer on a real folder, committed so a stranger can
 re-verify it cold. The more real runs, the stronger the entry. This is the loop — repeat it on any
-folder you own over the next few weeks.
+folder you own.
 
 ## The loop
 
@@ -36,15 +36,12 @@ folder you own over the next few weeks.
   no private repo — the guarantee is *shown*, not asserted. `receipts/linkstash/` is the worked example:
   `node verify.mjs --map receipts/linkstash --territory receipts/linkstash/territory`.
 
-## Folders worth mapping (all yours, all safe to publish)
+## What makes a good territory
 
-- `vendor-lilly` — done (`receipts/vendor-lilly/`).
-- `atomic-tattoo-removal` — done (`receipts/atomic-tattoo-removal/`): the three-backends-in-one-repo map.
-- `astanza-crm` — done (`receipts/astanza-crm/`): the live/leftover/ghost map over a junk-drawer root.
-- `fitness-pixel` / Arnold — done (`receipts/arnold-android/`): the Android/Kotlin map with a real ghost.
-- `linkstash` — done (`receipts/linkstash/`): a self-contained territory that **ships in the receipt**,
-  so its citation + live-wiring gates verify cold with no private repo.
-- `brewerybytes` — a smaller React + Firebase app; good for a compact second map.
-
-Skip: `MySeniorCenter` (client code + SSNs), `fiji-modern` / `consignment-radar` (ICM starters —
-that's mapping the method).
+- **Something you own and can publish** — a repo, a delivery folder, an automation pack. The unit is
+  a *noun that moves other nouns*, so pick a folder where changing one thing touches another.
+- **Avoid:** a client's proprietary code, anything that carries secrets (keys, records, PII), and an
+  ICM/methodology folder — mapping the method is out; map a body of work instead.
+- **Shipped in this repo already:** `vendor-lilly`, `atomic-tattoo-removal`, `astanza-crm`, and
+  `arnold-android` (four private trees, cited but not published), plus `linkstash` — a self-contained
+  territory that **ships in the receipt** so its citation + live-wiring gates verify cold.

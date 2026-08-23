@@ -42,8 +42,9 @@ reachable from the catalog, and the loader never says "load everything." The lef
 exempt from the live-wiring gate by design — the ghost's citations deliberately point at its KDoc and
 its one caller, a **test**.
 
-## Notes for the next run
+## Off this map (and why)
 
-- The four coach modes (`cycle` / `program` / `review` / `weekly`) could each earn a card if a reader
-  is changing one specifically; here they are mapped as one repeating unit.
-- `ui/screens/` (Compose screens + ViewModels, one per feature) is a second map worth its own spine.
+- **The four coach modes** (`cycle` / `program` / `review` / `weekly`) are mapped as one repeating unit;
+  a reader changing one specifically would card it out — off this spine on purpose.
+- **`ui/screens/`** (Compose screens + ViewModels, one per feature) is a second spine, off this map — its
+  own territory for a reader working the UI layer.
