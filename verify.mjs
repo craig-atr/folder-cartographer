@@ -253,6 +253,9 @@ function selftest() {
     { name: 'bad: slurp loader (should FAIL on no-slurp)', dir: join(fx, 'bad-slurp'), territory: terr, expect: 'fail' },
     { name: 'bad: dangling edge (should FAIL on edges)', dir: join(fx, 'bad-dangling-edge'), territory: terr, expect: 'fail' },
     { name: 'bad: wish mapped as live (should FAIL on live-wiring)', dir: join(fx, 'bad-wish-as-live'), territory: join(fx, 'wish-territory'), expect: 'fail' },
+    { name: 'bad: missing frontmatter (should FAIL on G1 schema)', dir: join(fx, 'bad-schema'), territory: terr, expect: 'fail' },
+    { name: 'bad: orphan card off the catalog (should FAIL on G5 reachable)', dir: join(fx, 'bad-orphan-card'), territory: terr, expect: 'fail' },
+    { name: 'bad: invalid decline (should FAIL on G7 decline)', dir: join(fx, 'bad-decline'), territory: null, expect: 'fail' },
   ];
   let allGood = true;
   for (const c of cases) {
