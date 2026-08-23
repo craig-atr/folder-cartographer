@@ -143,7 +143,7 @@ function parseCatalog(md){
     const c=row.split('|').map(x=>x.trim());
     const link=row.match(/objects\/([A-Za-z0-9._-]+\.md)/); if(!link) continue;
     if(/^-+$/.test(c[1]||'')) continue;
-    cards.push({id:link[1].replace(/\.md$/,''),file:link[1],noun:c[1],state:(c[2]||'live').toLowerCase(),what:c[3]||''});
+    cards.push({id:link[1].replace(/\.md$/,''),file:link[1],noun:c[1],state:(c[2]||'live').toLowerCase().replace(/[^a-z]/g,''),what:c[3]||''});
   }
   const coll=[]; const cm=md.split(/##\s*Collisions/i)[1];
   if(cm) for(const l of cm.split('\n')) if(l.trim().startsWith('- ')) coll.push(l.trim().slice(2));

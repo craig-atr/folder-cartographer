@@ -89,8 +89,10 @@
   <div class="grid" id="declines"></div>
 
   <div class="foot ui">
-    These maps cite <b>private</b> source; the map is public, the territory is not — so the graph loads,
-    and the citations are verified separately with <code>node verify.mjs --map receipts/&lt;name&gt; --territory &lt;path&gt;</code>.
+    Four of these maps cite <b>private</b> source; the map is public, the territory is not — so the graph
+    loads, and the citations are verified separately with <code>node verify.mjs --map receipts/&lt;name&gt; --territory &lt;path&gt;</code>.
+    <b>linkstash</b> ships its own territory, so that same command runs green from a cold clone —
+    <code>node verify.mjs --map receipts/linkstash --territory receipts/linkstash/territory</code>.
     See the <a href="README.md">README</a> · repo: <a href="https://github.com/craig-atr/folder-cartographer">craig-atr/folder-cartographer</a>.
     <div class="note">Open this over http (e.g. <code>python -m http.server 8231</code>) so the maps can load — a <code>file://</code> open can't fetch them.</div>
   </div>
@@ -112,6 +114,9 @@ const RECEIPTS = [
   { slug:'arnold-android', title:'Arnold (Android)',
     blurb:'A Kotlin AI fitness-coach app. Interface-vs-impl wired once in MainActivity, a quarantined legacy leftover, and a migrator that runs only in tests — a ghost.',
     fallback:{live:5,leftover:1,ghost:1} },
+  { slug:'linkstash', title:'linkstash — verifies cold',
+    blurb:'A tiny link-saving API whose territory ships in the receipt, so the citation + live-wiring gates run green cold — no private repo. Auth is not on every route; a config flag promises rate-limiting nothing mounts.',
+    fallback:{live:4,leftover:1,ghost:1} },
 ];
 const DECLINES = [
   { slug:'craig-howard-archive', title:'A personal file drawer',

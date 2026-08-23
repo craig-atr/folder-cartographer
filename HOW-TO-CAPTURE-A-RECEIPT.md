@@ -30,6 +30,11 @@ folder you own over the next few weeks.
 - **It names a real "wrong neighbour"** on at least one card — the line that makes it a map.
 - **A decline counts.** An honest "this folder is an archive, not a system" is a receipt too, and
   a strong one — it shows the tool knows the limit of its own job.
+- **Ship the territory when you can.** If the body of work is small and public (or you build a
+  self-contained one), put it under `receipts/<name>/territory/` and cite it as `file:line` relative
+  to that folder. Then the citation gate **and** the live-wiring gate run green from a cold clone with
+  no private repo — the guarantee is *shown*, not asserted. `receipts/linkstash/` is the worked example:
+  `node verify.mjs --map receipts/linkstash --territory receipts/linkstash/territory`.
 
 ## Folders worth mapping (all yours, all safe to publish)
 
@@ -37,6 +42,8 @@ folder you own over the next few weeks.
 - `atomic-tattoo-removal` — done (`receipts/atomic-tattoo-removal/`): the three-backends-in-one-repo map.
 - `astanza-crm` — done (`receipts/astanza-crm/`): the live/leftover/ghost map over a junk-drawer root.
 - `fitness-pixel` / Arnold — done (`receipts/arnold-android/`): the Android/Kotlin map with a real ghost.
+- `linkstash` — done (`receipts/linkstash/`): a self-contained territory that **ships in the receipt**,
+  so its citation + live-wiring gates verify cold with no private repo.
 - `brewerybytes` — a smaller React + Firebase app; good for a compact second map.
 
 Skip: `MySeniorCenter` (client code + SSNs), `fiji-modern` / `consignment-radar` (ICM starters —

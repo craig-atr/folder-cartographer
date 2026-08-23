@@ -1,0 +1,4 @@
+[
+  { "id": "l1", "url": "https://example.com", "title": "Example" },
+  { "id": "l2", "url": "https://nodejs.org", "title": "Node.js" }
+]

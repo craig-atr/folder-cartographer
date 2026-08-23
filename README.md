@@ -43,7 +43,14 @@ The checker turns every "must" in `rules.md` into a gate. Prove it bites from a 
 node verify.mjs --selftest
 ```
 
-Validate a real produced map against the source it cites:
+Validate a real produced map against the source it cites. One receipt — **`linkstash`** — ships its
+own territory inside the repo, so this runs green **from a cold clone with no private repo**:
+
+```bash
+node verify.mjs --map receipts/linkstash --territory receipts/linkstash/territory
+```
+
+The four other maps cite private source; point `--territory` at your own clone to check them:
 
 ```bash
 node verify.mjs --map receipts/vendor-lilly --territory /path/to/vendor-lilly
@@ -92,7 +99,7 @@ plus the honest decline. (`python -m http.server 8231` works too. To jump to one
 | `reference/` | the closed set of card types, the walk order, the naming collisions |
 | `verify.mjs` | the offline checker; `--selftest` proves every gate bites |
 | `fixtures/` | a tiny self-contained territory + a good map + one negative fixture per gate |
-| `receipts/` | real runs: four maps (Vendor Lilly, Atomic Tattoo Removal, Astanza CRM, Arnold/Android) + an honest archive decline |
+| `receipts/` | real runs: five maps (Vendor Lilly, Atomic Tattoo Removal, Astanza CRM, Arnold/Android, linkstash) + an honest archive decline. `linkstash` ships its territory so its citations verify cold |
 | `viewer/` | the visual Map Room (renders a produced map, one card at a time) |
 | `index.html` + `serve.mjs` | the atlas landing page + a zero-dep local server (`node serve.mjs`) |
 
@@ -123,3 +130,9 @@ plus the honest decline. (`python -m http.server 8231` works too. To jump to one
   fitness-coach app. Teaches interface-vs-impl wired once in `MainActivity`, a **leftover** (the old
   Node app quarantined out of the Gradle build), and a **ghost** (a first-launch migrator that is
   green in tests but called by no production path). Gated green against the private source.
+- [`receipts/linkstash/`](receipts/linkstash/) — **the cold-verifiable one.** A tiny zero-dependency
+  link-saving API whose **territory ships inside the receipt** (`receipts/linkstash/territory/`), so a
+  judge can run the citation gate **and** the live-wiring gate green with no private repo. Its lessons:
+  auth is *not* on every route (GET is public), a **ghost** rate-limiter whose config says `enabled:
+  true` but which nothing mounts, and a **leftover** pre-split monolith. Six cards (4 live, 1 ghost, 1
+  leftover).
