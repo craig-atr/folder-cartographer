@@ -99,7 +99,7 @@ plus the honest decline. (`python -m http.server 8231` works too. To jump to one
 | `reference/` | the closed set of card types, the walk order, the naming collisions |
 | `verify.mjs` | the offline checker; `--selftest` proves every gate bites |
 | `fixtures/` | a tiny self-contained territory + a good map + one negative fixture per gate |
-| `receipts/` | real runs: five maps (Vendor Lilly, Atomic Tattoo Removal, Astanza CRM, Arnold/Android, linkstash) + an honest archive decline. `linkstash` ships its territory so its citations verify cold |
+| `receipts/` | real runs: four private-repo maps + `linkstash` (ships its territory) + three **public-repo** maps (Express, Commander, Fastify — clone the tag and verify cold) + an honest archive decline |
 | `viewer/` | the visual Map Room (renders a produced map, one card at a time) |
 | `index.html` + `serve.mjs` | the atlas landing page + a zero-dep local server (`node serve.mjs`) |
 
@@ -136,3 +136,19 @@ plus the honest decline. (`python -m http.server 8231` works too. To jump to one
   auth is *not* on every route (GET is public), a **ghost** rate-limiter whose config says `enabled:
   true` but which nothing mounts, and a **leftover** pre-split monolith. Six cards (4 live, 1 ghost, 1
   leftover).
+
+### Public-repo maps (clone the tag, verify cold)
+
+Three maps of **real, public** codebases. Nothing is shipped in-repo; clone the exact tag named in each
+`run-notes.md` and the citation (G3) and live-wiring (G9) gates resolve against real third-party source —
+the strongest "point it at a codebase you already trust" proof.
+
+- [`receipts/express/`](receipts/express/) — **expressjs/express `v4.22.2`.** The routing spine; the payoff
+  is *the `app` does not route* — it forwards to a lazily-built `Router`. Ghost: the `express.bodyParser` /
+  `logger` / `session` names whose getters throw. Six cards.
+- [`receipts/commander/`](receipts/commander/) — **tj/commander.js `v15.0.0`.** The argv parse spine
+  (command → parse → dispatch → action); `help` is a separate render spine. Honest ghost: `this._args`, a
+  deprecated alias no live path reads. Seven cards.
+- [`receipts/fastify/`](receipts/fastify/) — **fastify/fastify `v5.9.0`.** A tight spine over a big repo:
+  encapsulation is downward-only, a route added is not a plugin mounted, `Context` is a snapshot. Ghost:
+  `FSTDEP022` router keys that still work but are slated for removal. Seven cards.

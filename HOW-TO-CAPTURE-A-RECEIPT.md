@@ -43,5 +43,7 @@ folder you own.
 - **Avoid:** a client's proprietary code, anything that carries secrets (keys, records, PII), and an
   ICM/methodology folder — mapping the method is out; map a body of work instead.
 - **Shipped in this repo already:** `vendor-lilly`, `atomic-tattoo-removal`, `astanza-crm`, and
-  `arnold-android` (four private trees, cited but not published), plus `linkstash` — a self-contained
-  territory that **ships in the receipt** so its citation + live-wiring gates verify cold.
+  `arnold-android` (four private trees, cited but not published); `linkstash` — a self-contained
+  territory that **ships in the receipt** so its gates verify cold; and three **public-repo** maps
+  (`express`, `commander`, `fastify`) — nothing shipped, a judge clones the tag named in the receipt's
+  `run-notes.md` and the citation + live-wiring gates resolve against real third-party source.

@@ -91,8 +91,9 @@
   <div class="foot ui">
     Four of these maps cite <b>private</b> source; the map is public, the territory is not — so the graph
     loads, and the citations are verified separately with <code>node verify.mjs --map receipts/&lt;name&gt; --territory &lt;path&gt;</code>.
-    <b>linkstash</b> ships its own territory, so that same command runs green from a cold clone —
-    <code>node verify.mjs --map receipts/linkstash --territory receipts/linkstash/territory</code>.
+    <b>linkstash</b> ships its own territory, so that command runs green from a cold clone with no extra repo.
+    <b>Express, Commander, and Fastify</b> map <b>public</b> repos — clone the tag named in each
+    <code>run-notes.md</code> and the citation + live-wiring gates verify against real third-party source.
     See the <a href="README.md">README</a> · repo: <a href="https://github.com/craig-atr/folder-cartographer">craig-atr/folder-cartographer</a>.
     <div class="note">Open this over http (e.g. <code>python -m http.server 8231</code>) so the maps can load — a <code>file://</code> open can't fetch them.</div>
   </div>
@@ -117,6 +118,15 @@ const RECEIPTS = [
   { slug:'linkstash', title:'linkstash — verifies cold',
     blurb:'A tiny link-saving API whose territory ships in the receipt, so the citation + live-wiring gates run green cold — no private repo. Auth is not on every route; a config flag promises rate-limiting nothing mounts.',
     fallback:{live:4,leftover:1,ghost:1} },
+  { slug:'express', title:'Express 4.22.2',
+    blurb:'The routing spine of a public repo any judge can clone. The payoff: the app does not route — it forwards to a lazily-built Router. Ghost: express.bodyParser / logger names whose getters throw.',
+    fallback:{live:5,leftover:0,ghost:1} },
+  { slug:'commander', title:'Commander.js 15.0.0',
+    blurb:'The argv parse spine of a public repo. Command → parse → dispatch → action; help is a separate render spine. Honest ghost: this._args, a deprecated alias no live path reads.',
+    fallback:{live:6,leftover:0,ghost:1} },
+  { slug:'fastify', title:'Fastify 5.9.0',
+    blurb:'A tight spine over a big public repo. Encapsulation is downward-only; a route added is not a plugin mounted; Context is a snapshot. Ghost: FSTDEP022 router keys that work but are slated for removal.',
+    fallback:{live:6,leftover:0,ghost:1} },
 ];
 const DECLINES = [
   { slug:'craig-howard-archive', title:'A personal file drawer',
